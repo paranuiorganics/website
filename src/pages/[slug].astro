@@ -1,0 +1,38 @@
+---
+// Per-town supplier pages. Paths come from suppliers.json and must match the existing URLs
+// (e.g. /palmerstonnorth, /masterton-1, /marton-copy).
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import SupplierMap from '../components/SupplierMap.astro';
+import SupplierCard from '../components/SupplierCard.astro';
+import { locations, regionName, toPoints, type Location } from '../lib/suppliers';
+
+export function getStaticPaths() {
+  return locations.map((loc) => ({ params: { slug: loc.slug }, props: { loc } }));
+}
+
+const { loc } = Astro.props as { loc: Location };
+const points = toPoints([loc]);
+const names = loc.suppliers.map((s) => s.name).join(' and ');
+---
+<Base
+  title={`${loc.town} | Paranui Organics`}
+  description={`Buy Paranui Organics compost and garden mixes in ${loc.town} from ${names}.`}
+>
+  <section class="section" data-supplier-finder>
+    <div class="wrap">
+      <nav aria-label="Breadcrumb" class="mb-6 text-[15px]">
+        <a href="/suppliers" class="link">&larr; All suppliers</a>
+      </nav>
+      <PageIntro eyebrow={regionName(loc.region)} title={`Suppliers in ${loc.town}`}>
+        <p>Paranui Organics products are available from {loc.suppliers.length > 1 ? 'these suppliers' : 'this supplier'} in {loc.town}.</p>
+      </PageIntro>
+      <div class="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+        <div class="flex flex-col gap-3">
+          {points.map((p) => <SupplierCard point={p} linkTown={false} headingLevel="h2" />)}
+        </div>
+        <SupplierMap points={points} class="h-[320px] md:h-[400px]" zoom={13} />
+      </div>
+    </div>
+  </section>
+</Base>

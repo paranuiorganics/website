@@ -1,0 +1,22 @@
+---
+import { telHref, type MapPoint } from '../lib/suppliers';
+interface Props { point: MapPoint; linkTown?: boolean; headingLevel?: 'h2' | 'h3' }
+const { point: p, linkTown = true, headingLevel: H = 'h3' } = Astro.props;
+---
+<article
+  class="supplier rounded-2xl border-2 border-line bg-paper px-4 py-3 transition-colors data-[on]:border-clay hover:border-sage"
+  data-id={p.id}
+  data-region={p.region}
+>
+  {linkTown
+    ? <a href={`/${p.slug}`} class="text-xs font-extrabold uppercase tracking-wider text-clay-dark no-underline hover:underline">{p.town}</a>
+    : <p class="text-xs font-extrabold uppercase tracking-wider text-clay-dark">{p.town}</p>}
+  <H class="!text-base leading-snug">
+    <button type="button" class="select text-left font-extrabold text-soil hover:underline" aria-label={`Show ${p.name} on the map`}>{p.name}</button>
+  </H>
+  <p class="mt-1 text-[15px] text-muted">
+    {p.address.join(', ')}<br />
+    <a href={telHref(p.phone)} class="font-bold text-sage-dark">{p.phone}</a>
+    {p.website && <> · <a href={p.website} target="_blank" rel="noopener" class="font-bold text-sage-dark">Website</a></>}
+  </p>
+</article>

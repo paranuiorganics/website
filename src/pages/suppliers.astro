@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import SupplierMap from '../components/SupplierMap.astro';
+import SupplierCard from '../components/SupplierCard.astro';
+import { locations, regions, toPoints } from '../lib/suppliers';
+
+const points = toPoints(locations);
+const groups = regions.map((r) => ({ ...r, points: points.filter((p) => p.region === r.id) }));
+---
+<Base
+  title="Suppliers | Paranui Organics"
+  description="Find a Paranui Organics supplier near you. Garden centres and landscape yards in Manawatū, Whanganui, Horowhenua, Kāpiti, Wellington and the Wairarapa."
+>
+  <section class="section" data-supplier-finder>
+    <div class="wrap">
+      <PageIntro eyebrow="Where to buy" title="Find a supplier near you">
+        <p>Our products are stocked by garden centres and landscape yards from Whanganui to Wellington and the Wairarapa. Select a pin or a name for details.</p>
+      </PageIntro>
+
+      <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter by region">
+        <button type="button" data-region-filter="" aria-pressed="true" class="chip">All regions</button>
+        {regions.map((r) => <button type="button" data-region-filter={r.id} aria-pressed="false" class="chip">{r.name}</button>)}
+      </div>
+
+      <div class="mt-5 grid items-start gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <div class="lg:sticky lg:top-24">
+          <SupplierMap points={points} />
+        </div>
+        <div class="flex flex-col gap-6">
+          {groups.map((g) => (
+            <section data-region-group={g.id} aria-labelledby={`region-${g.id}`}>
+              <h2 id={`region-${g.id}`} class="!text-lg !text-muted">{g.name}</h2>
+              <div class="mt-2 flex flex-col gap-2.5">
+                {g.points.map((p) => <SupplierCard point={p} />)}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chip {
+    border: 2px solid var(--color-line);
+    background: var(--color-paper);
+    color: var(--color-soil);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.35em 1em;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--color-soil);
+    border-color: var(--color-soil);
+    color: #fff;
+  }
+</style>

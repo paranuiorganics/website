@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Repo variables (Settings > Secrets and variables > Actions > Variables).
+      # DEPLOY_ENV: "test" (default, noindex) or "production".
+      DEPLOY_ENV: ${{ vars.DEPLOY_ENV || 'test' }}
+      PUBLIC_WEB3FORMS_KEY: ${{ vars.PUBLIC_WEB3FORMS_KEY }}
+      PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:links
+      - name: Guard CNAME matches DEPLOY_ENV
+        run: |
+          cname=$(cat dist/CNAME)
+          if [ "$DEPLOY_ENV" = "production" ] && [ "$cname" != "www.paranuiorganics.co.nz" ]; then echo "::error::DEPLOY_ENV=production but CNAME is $cname"; exit 1; fi
+          if [ "$DEPLOY_ENV" != "production" ] && [ "$cname" = "www.paranuiorganics.co.nz" ]; then echo "::error::CNAME is production but DEPLOY_ENV=$DEPLOY_ENV"; exit 1; fi
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

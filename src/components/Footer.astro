@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo.png';
+import business from '../data/business.json';
+const year = new Date().getFullYear();
+---
+<footer class="bg-soil text-[#e7dcc9]">
+  <div class="wrap grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <Image src={logo} alt="Paranui Organics" width={160} densities={[1, 2]} class="h-12 w-auto rounded-lg bg-paper px-2 py-1" />
+      <p class="mt-3">{business.legalName}<br />{business.locality}, Manawatū</p>
+    </div>
+    <div>
+      <p class="font-extrabold text-white">Phone</p>
+      <a href={`tel:${business.phoneE164}`} class="text-white">{business.phone}</a>
+    </div>
+    <div>
+      <p class="font-extrabold text-white">Explore</p>
+      <ul>
+        <li><a href="/products" class="text-white">Products</a></li>
+        <li><a href="/suppliers" class="text-white">Suppliers</a></li>
+        <li><a href="/contact" class="text-white">Contact</a></li>
+      </ul>
+    </div>
+    <div class="lg:self-end">&copy; {year} {business.name}</div>
+  </div>
+</footer>

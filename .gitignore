@@ -1,0 +1,12 @@
+# deps / build
+node_modules/
+dist/
+.astro/
+
+# local only
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode/*
+!.vscode/extensions.json

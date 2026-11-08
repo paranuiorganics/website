@@ -1,0 +1,104 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import hero from '../assets/images/tyre-planters.jpg';
+import beds from '../assets/images/raised-beds.jpg';
+import truck from '../assets/images/truck.jpg';
+import { locations, regions } from '../lib/suppliers';
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const heroBg = await getImage({ src: hero, width: 1920, format: 'webp' });
+const heroBgSm = await getImage({ src: hero, width: 900, format: 'webp' });
+---
+<Base
+  title="Home - Paranui Organics"
+  description="Paranui Organics makes compost from recycled organic materials. Composting specialists supplying garden products to the lower North Island since 2006."
+>
+  <link slot="head" rel="preload" as="image" href={heroBgSm.src} imagesrcset={`${heroBgSm.src} 900w, ${heroBg.src} 1920w`} imagesizes="100vw" fetchpriority="high" />
+
+  <section class="relative isolate overflow-hidden bg-soil text-white">
+    <img
+      src={heroBg.src}
+      srcset={`${heroBgSm.src} 900w, ${heroBg.src} 1920w`}
+      sizes="100vw"
+      alt=""
+      fetchpriority="high"
+      class="absolute inset-0 -z-10 size-full object-cover"
+    />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-[#2e2016]/90 via-[#2e2016]/60 to-[#2e2016]/20"></div>
+    <div class="wrap py-20 sm:py-28 lg:py-32">
+      <p class="eyebrow !text-[#f0c4a3]">Composting specialists since 2006</p>
+      <h1 class="mt-2 max-w-[14ch] !text-white">Welcome to Paranui Organics</h1>
+      <p class="mt-4 max-w-[46ch] text-lg text-[#f1e9da]">
+        We take great pride in providing gardening products to the lower North Island, as well as a service for commercial raw material recycling.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/suppliers" class="btn btn-primary">Find a supplier</a>
+        <a href="/products" class="btn btn-ghost">Our products</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">What we do</p>
+      <h2 class="mt-1">Our services</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <article class="card flex flex-col">
+          <Image src={beds} alt="Raised vegetable garden beds with young seedlings" widths={[480, 800, 1100]} sizes="(min-width: 768px) 560px, 100vw" class="aspect-video w-full object-cover" />
+          <div class="flex flex-1 flex-col p-6">
+            <h3>Garden products</h3>
+            <p class="mt-2 flex-1 text-muted">Since 2006 Paranui Organics has supplied garden centres in the lower North Island with exceptional gardening products such as organic compost, vegetable mix, garden mix and much more.</p>
+            <a href="/products" class="link mt-4">See our products &rarr;</a>
+          </div>
+        </article>
+        <article class="card flex flex-col">
+          <Image src={truck} alt="Paranui Organics compost truck" widths={[480, 800, 1100]} sizes="(min-width: 768px) 560px, 100vw" class="aspect-video w-full object-cover" />
+          <div class="flex flex-1 flex-col p-6">
+            <h3>Commercial recycling</h3>
+            <p class="mt-2 flex-1 text-muted">We provide recycling for most commercial waste streams. We'd love to hear from you to see how we can help you recycle your waste sustainably.</p>
+            <a href="/contact" class="link mt-4">Contact us &rarr;</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cream-2">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">Made in Foxton</p>
+          <h2 class="mt-1">Our products</h2>
+        </div>
+        <a href="/products" class="link">All products &rarr;</a>
+      </div>
+      <ul class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        {products.map((p) => (
+          <li>
+            <a href={`/products#${p.id}`} class="group block no-underline">
+              <Image src={p.data.image} alt="" widths={[240, 400]} sizes="(min-width: 1024px) 180px, (min-width: 640px) 33vw, 50vw" class="aspect-square w-full rounded-2xl object-cover transition-transform group-hover:scale-[1.02]" />
+              <span class="mt-2 block font-extrabold text-soil group-hover:underline">{p.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="rounded-card bg-sage-dark p-8 text-white sm:p-10 lg:flex lg:items-center lg:justify-between lg:gap-10">
+        <div>
+          <p class="eyebrow !text-sage-light">Where to buy</p>
+          <h2 class="mt-1 !text-white">Find a supplier near you</h2>
+          <p class="mt-3 max-w-[52ch] text-sage-light">
+            Our products are stocked by {locations.reduce((n, l) => n + l.suppliers.length, 0)} garden centres and landscape yards across {regions.map((r) => r.name).join(', ').replace(/, ([^,]*)$/, ' and $1')}.
+          </p>
+        </div>
+        <a href="/suppliers" class="btn mt-6 shrink-0 bg-paper text-soil hover:bg-cream-2 lg:mt-0">View the supplier map</a>
+      </div>
+    </div>
+  </section>
+</Base>

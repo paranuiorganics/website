@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import seedlings from '../assets/images/seedlings.jpg';
+import business from '../data/business.json';
+
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+---
+<Base
+  title="Contact | Paranui Organics"
+  description="Contact Paranui Organics about garden products, bulk orders or commercial organic waste recycling. Phone 06 329 9707."
+>
+  <section class="section">
+    <div class="wrap grid items-stretch gap-10 lg:grid-cols-2">
+      <div>
+        <PageIntro eyebrow="Get in touch" title="Contact us">
+          <p>Interested in helping to make the world a greener place? Get in touch to learn more about our wide range of products and recycling services.</p>
+        </PageIntro>
+        <p class="mt-6">For all enquiries, call<br /><a href={`tel:${business.phoneE164}`} class="text-3xl font-extrabold text-soil no-underline hover:underline">{business.phone}</a></p>
+        <p class="mt-6">Or send us a message:</p>
+
+        <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="mt-3 grid gap-4" data-key={accessKey ? '' : undefined}>
+          <input type="hidden" name="access_key" value={accessKey ?? ''} />
+          <input type="hidden" name="subject" value="New enquiry from paranuiorganics.co.nz" />
+          <input type="hidden" name="from_name" value="Paranui Organics website" />
+          <!-- Honeypot: real visitors never see or tick this -->
+          <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <label class="grid gap-1 font-bold">Name
+            <input name="name" required autocomplete="name" class="field" />
+          </label>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="grid gap-1 font-bold">Email
+              <input type="email" name="email" required autocomplete="email" class="field" />
+            </label>
+            <label class="grid gap-1 font-bold">Phone <span class="sr-only">(optional)</span>
+              <input type="tel" name="phone" autocomplete="tel" class="field" />
+            </label>
+          </div>
+          <label class="grid gap-1 font-bold">Subject
+            <input name="enquiry_subject" class="field" />
+          </label>
+          <label class="grid gap-1 font-bold">Message
+            <textarea name="message" rows="5" required class="field"></textarea>
+          </label>
+          <div class="flex flex-wrap items-center gap-4">
+            <button type="submit" class="btn btn-primary cursor-pointer">Send message</button>
+            <p id="form-status" role="status" class="font-bold"></p>
+          </div>
+        </form>
+      </div>
+      <Image src={seedlings} alt="Seedlings growing in pots of compost" widths={[600, 900, 1300]} sizes="(min-width: 1024px) 560px, 100vw" class="hidden size-full min-h-80 rounded-card object-cover lg:block" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .field {
+    font: inherit;
+    font-weight: 400;
+    padding: 0.7em 0.9em;
+    border: 2px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-paper);
+  }
+  .field:focus { outline: none; border-color: var(--color-sage-dark); }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.hasAttribute('data-key')) {
+      status.textContent = 'The form isn’t connected yet. Please call us instead.';
+      return;
+    }
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    btn.disabled = true;
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message);
+      form.reset();
+      status.textContent = 'Thanks, we’ll be in touch soon.';
+    } catch {
+      status.textContent = 'Sorry, that didn’t send. Please call us instead.';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>

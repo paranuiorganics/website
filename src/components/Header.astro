@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo.png';
+
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/products', label: 'Products' },
+  { href: '/suppliers', label: 'Suppliers' },
+];
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="sticky top-0 z-[1000] border-b border-line bg-paper/95 backdrop-blur">
+  <div class="wrap flex items-center justify-between gap-4 py-2.5">
+    <a href="/" aria-label="Paranui Organics home" class="shrink-0">
+      <Image src={logo} alt="Paranui Organics" width={180} densities={[1, 2]} loading="eager" class="h-12 w-auto sm:h-14" />
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-7 font-bold">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+              class="border-b-[3px] border-transparent py-1 no-underline hover:border-sage aria-[current=page]:border-sage"
+            >{item.label}</a>
+          </li>
+        ))}
+        <li><a href="/contact" class="btn btn-primary px-5 py-2">Contact us</a></li>
+      </ul>
+    </nav>
+
+    <details class="group relative md:hidden">
+      <summary class="flex cursor-pointer list-none items-center rounded-lg p-2 text-soil [&::-webkit-details-marker]:hidden" aria-label="Menu">
+        <svg class="size-7 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        <svg class="hidden size-7 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </summary>
+      <nav aria-label="Main" class="absolute right-0 mt-2 w-56 rounded-2xl border border-line bg-paper p-2 shadow-lg">
+        <ul class="font-bold">
+          {[...nav, { href: '/contact', label: 'Contact' }].map((item) => (
+            <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined} class="block rounded-xl px-4 py-3 no-underline hover:bg-cream-2 aria-[current=page]:text-clay-dark">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,100 @@
+---
+// Leaflet + OpenStreetMap supplier map. Progressive enhancement: the supplier list is
+// server-rendered next to it, so everything works (and is indexable) without JS.
+// Pairs with .supplier cards (SupplierCard) and optional [data-region-filter] buttons
+// inside the same [data-supplier-finder] container.
+import type { MapPoint } from '../lib/suppliers';
+interface Props { points: MapPoint[]; class?: string; zoom?: number }
+const { points, class: cls = 'h-[380px] md:h-[560px]', zoom } = Astro.props;
+const data = points.map(({ id, name, town, region, lat, lng, phone, address }) => ({ id, name, town, region, lat, lng, phone, address }));
+---
+<div
+  class:list={['supplier-map z-0 rounded-card border border-line bg-cream-2', cls]}
+  role="region"
+  aria-label="Map of supplier locations"
+  data-points={JSON.stringify(data)}
+  data-zoom={zoom}
+></div>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+  import { telHref } from '../lib/suppliers';
+
+  type Pt = { id: string; name: string; town: string; region: string; lat: number; lng: number; phone: string; address: string[] };
+
+  const pin = (on: boolean) =>
+    L.divIcon({
+      className: '',
+      iconSize: [28, 36],
+      iconAnchor: [14, 34],
+      popupAnchor: [0, -30],
+      html: `<svg width="28" height="36" viewBox="0 0 28 36" aria-hidden="true"><path d="M14 1C7 1 1.5 6.4 1.5 13.3 1.5 22.5 14 35 14 35s12.5-12.5 12.5-21.7C26.5 6.4 21 1 14 1z" fill="${on ? '#b5653d' : '#4f5e3c'}" stroke="#fff" stroke-width="2"/><circle cx="14" cy="13" r="4.5" fill="#fff"/></svg>`,
+    });
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  document.querySelectorAll<HTMLElement>('.supplier-map').forEach((el) => {
+    const pts: Pt[] = JSON.parse(el.dataset.points!);
+    const root = el.closest<HTMLElement>('[data-supplier-finder]') ?? document.body;
+    const map = L.map(el, { scrollWheelZoom: false });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      className: 'map-tiles',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    let selected: string | null = null;
+    const markers = new Map<string, L.Marker>();
+    for (const p of pts) {
+      const m = L.marker([p.lat, p.lng], { icon: pin(false), title: `${p.name}, ${p.town}`, alt: p.name })
+        .addTo(map)
+        .bindPopup(`<strong>${esc(p.name)}</strong><br>${esc(p.address.join(', '))}<br><a href="${telHref(p.phone)}">${esc(p.phone)}</a>`);
+      m.on('click', () => select(p.id, false));
+      markers.set(p.id, m);
+    }
+
+    const bounds = L.latLngBounds(pts.map((p) => [p.lat, p.lng]));
+    const zoom = Number(el.dataset.zoom) || 13;
+    if (pts.length === 1) map.setView([pts[0].lat, pts[0].lng], zoom);
+    else map.fitBounds(bounds, { padding: [30, 30], maxZoom: zoom });
+
+    const cards = () => root.querySelectorAll<HTMLElement>('.supplier');
+
+    function select(id: string, fly: boolean) {
+      selected = id;
+      markers.forEach((m, k) => m.setIcon(pin(k === id)));
+      cards().forEach((c) => c.toggleAttribute('data-on', c.dataset.id === id));
+      const m = markers.get(id)!;
+      if (fly) {
+        map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 12), { duration: 0.6 });
+        map.once('moveend', () => m.openPopup());
+      }
+      root.querySelector(`.supplier[data-id="${id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    root.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>('.supplier .select');
+      if (btn) {
+        select(btn.closest<HTMLElement>('.supplier')!.dataset.id!, true);
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        return;
+      }
+      const f = (e.target as HTMLElement).closest<HTMLElement>('[data-region-filter]');
+      if (!f) return;
+      const region = f.dataset.regionFilter || null;
+      root.querySelectorAll<HTMLElement>('[data-region-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b === f)));
+      root.querySelectorAll<HTMLElement>('[data-region-group]').forEach((g) => (g.hidden = !!region && g.dataset.regionGroup !== region));
+      const vis = pts.filter((p) => !region || p.region === region);
+      markers.forEach((m, k) => m.setOpacity(vis.some((p) => p.id === k) ? 1 : 0.25));
+      map.closePopup();
+      map.flyToBounds(L.latLngBounds(vis.map((p) => [p.lat, p.lng])), { padding: [40, 40], maxZoom: 12, duration: 0.6 });
+    });
+  });
+</script>
+
+<style is:global>
+  .map-tiles { filter: sepia(0.35) saturate(0.75) brightness(1.03); }
+  .leaflet-container { font: inherit; }
+  .leaflet-popup-content { font-size: 14px; line-height: 1.5; }
+  .leaflet-popup-content strong { color: var(--color-soil); }
+</style>
