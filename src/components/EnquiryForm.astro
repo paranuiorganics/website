@@ -1,0 +1,89 @@
+---
+// Web3Forms enquiry form with honeypot. Used on /contact and /commercial-recycling.
+interface Props {
+  /** Email subject line the business receives. */
+  subject?: string;
+  /** Show a "Business" field (commercial enquiries). */
+  business?: boolean;
+  /** Show a free-text "Subject" field. */
+  subjectField?: boolean;
+}
+const { subject = 'New enquiry from paranuiorganics.co.nz', business = false, subjectField = true } = Astro.props;
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+---
+<form action="https://api.web3forms.com/submit" method="POST" class="enquiry-form mt-3 grid gap-4" data-key={accessKey ? '' : undefined}>
+  <input type="hidden" name="access_key" value={accessKey ?? ''} />
+  <input type="hidden" name="subject" value={subject} />
+  <input type="hidden" name="from_name" value="Paranui Organics website" />
+  <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <div class:list={['grid gap-4', business && 'sm:grid-cols-2']}>
+    <label class="grid gap-1 font-bold">Name
+      <input name="name" required autocomplete="name" class="field" />
+    </label>
+    {business && (
+      <label class="grid gap-1 font-bold">Business
+        <input name="business" autocomplete="organization" class="field" />
+      </label>
+    )}
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="grid gap-1 font-bold">Email
+      <input type="email" name="email" required autocomplete="email" class="field" />
+    </label>
+    <label class="grid gap-1 font-bold">Phone <span class="sr-only">(optional)</span>
+      <input type="tel" name="phone" autocomplete="tel" class="field" />
+    </label>
+  </div>
+  {subjectField && (
+    <label class="grid gap-1 font-bold">Subject
+      <input name="enquiry_subject" class="field" />
+    </label>
+  )}
+  <label class="grid gap-1 font-bold">Message
+    <textarea name="message" rows="5" required class="field"></textarea>
+  </label>
+  <div class="flex flex-wrap items-center gap-4">
+    <button type="submit" class="btn btn-primary cursor-pointer">Send message</button>
+    <p role="status" class="form-status font-bold"></p>
+  </div>
+</form>
+
+<style>
+  .field {
+    font: inherit;
+    font-weight: 400;
+    padding: 0.7em 0.9em;
+    border: 2px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-paper);
+  }
+  .field:focus { outline: none; border-color: var(--color-sage-dark); }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.enquiry-form').forEach((form) => {
+    const status = form.querySelector('.form-status')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.hasAttribute('data-key')) {
+        status.textContent = 'The form isn’t connected yet. Please call us instead.';
+        return;
+      }
+      const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+      btn.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message);
+        form.reset();
+        status.textContent = 'Thanks, we’ll be in touch soon.';
+      } catch {
+        status.textContent = 'Sorry, that didn’t send. Please call us instead.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+</script>

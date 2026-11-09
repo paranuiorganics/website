@@ -8,7 +8,7 @@ const LEGACY_PATHS = [
   '/', '/products', '/suppliers', '/contact',
   '/palmerstonnorth', '/wanganui', '/levin', '/feilding', '/foxton', '/shannon',
   '/otaki', '/waikanae', '/plimmerton', '/wellington', '/naenae', '/masterton-1', '/marton-copy', '/marton',
-  '/ashhurst',
+  '/ashhurst', '/commercial-recycling',
 ];
 
 const resolve = (path) => {
