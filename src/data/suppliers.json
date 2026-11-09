@@ -17,6 +17,7 @@
           "name": "Bark & Boulders Landscaping Supplies",
           "address": ["15 Murray Street", "Aramoho", "Whanganui 4500"],
           "phone": "06 343 6111",
+          "website": "https://barkandboulders.co.nz",
           "lat": -39.9058197,
           "lng": 175.0530000
         }
@@ -77,6 +78,7 @@
           "name": "Rosco's Bulk Yard",
           "address": ["36 Gladstone Street", "Feilding"],
           "phone": "06 323 7502",
+          "website": "https://roscosbulkyard.co.nz",
           "lat": -40.2271449,
           "lng": 175.5719923
         }
@@ -106,6 +108,7 @@
           "name": "Siteworx Landscape Supplies Yard",
           "address": ["2 Duncan Street", "Foxton 4814"],
           "phone": "021 065 8465",
+          "website": "https://www.siteworx2006.co.nz",
           "lat": -40.4690910,
           "lng": 175.2805893
         }
@@ -209,6 +212,7 @@
           "name": "Higgins Contractors Wairarapa",
           "address": ["4061 State Highway 2", "Waingawa 5791"],
           "phone": "06 370 0444",
+          "website": "https://www.higgins.co.nz",
           "lat": -40.9664549,
           "lng": 175.6062732
         }
@@ -223,6 +227,7 @@
           "name": "Siteworx Landscape Supplies Yard",
           "address": ["45 Kemptons Line", "Greytown 5794"],
           "phone": "021 065 8465",
+          "website": "https://www.siteworx2006.co.nz",
           "lat": -41.0980576,
           "lng": 175.4544740
         }
