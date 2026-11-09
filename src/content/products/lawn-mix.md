@@ -6,4 +6,4 @@ image: ../../assets/images/lawn.jpg
 imageAlt: Freshly mown green lawn
 tags: [Top dressing, Drainage]
 ---
-Washed sand added to the mix gives good drainage, helping to stop puddles forming.
+5mm washed river sand is added to 10mm screened organic compost, giving good drainage and helping to stop puddles forming.

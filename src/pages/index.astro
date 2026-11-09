@@ -74,11 +74,11 @@ const heroBgSm = await getImage({ src: hero, width: 900, format: 'webp' });
         </div>
         <a href="/products" class="link">All products &rarr;</a>
       </div>
-      <ul class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <ul class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {products.map((p) => (
           <li>
             <a href={`/products#${p.id}`} class="group block no-underline">
-              <Image src={p.data.image} alt="" widths={[240, 400]} sizes="(min-width: 1024px) 180px, (min-width: 640px) 33vw, 50vw" class="aspect-square w-full rounded-2xl object-cover transition-transform group-hover:scale-[1.02]" />
+              <Image src={p.data.image} alt="" widths={[240, 400]} sizes="(min-width: 1024px) 220px, (min-width: 640px) 33vw, 50vw" class="aspect-square w-full rounded-2xl object-cover transition-transform group-hover:scale-[1.02]" />
               <span class="mt-2 block font-extrabold text-soil group-hover:underline">{p.data.title}</span>
             </a>
           </li>
