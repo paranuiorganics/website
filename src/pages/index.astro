@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro';
 import hero from '../assets/images/tyre-planters.jpg';
 import beds from '../assets/images/raised-beds.jpg';
 import truck from '../assets/images/truck.jpg';
+import mmLogo from '../assets/images/monster-mulching-logo.png';
 import { locations, regions } from '../lib/suppliers';
 
 const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
@@ -64,6 +65,9 @@ const heroBgSm = await getImage({ src: hero, width: 900, format: 'webp' });
       </div>
 
       <aside class="mt-6 flex flex-col gap-5 rounded-card border border-line bg-paper p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between" aria-labelledby="partner-mm">
+        <a href="https://monstermulching.nz" target="_blank" rel="noopener" class="shrink-0 self-center">
+          <Image src={mmLogo} alt="Monster Mulching" width={200} densities={[1, 2]} class="h-auto w-44 sm:w-52" />
+        </a>
         <div class="max-w-[62ch]">
           <p class="eyebrow">In partnership</p>
           <h3 id="partner-mm" class="mt-1">Commercial wood grinding with Monster Mulching</h3>
