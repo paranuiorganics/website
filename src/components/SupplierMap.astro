@@ -6,7 +6,7 @@
 import type { MapPoint } from '../lib/suppliers';
 interface Props { points: MapPoint[]; class?: string; zoom?: number }
 const { points, class: cls = 'h-[380px] md:h-[560px]', zoom } = Astro.props;
-const data = points.map(({ id, name, town, region, lat, lng, phone, address }) => ({ id, name, town, region, lat, lng, phone, address }));
+const data = points.map(({ id, name, town, regions, lat, lng, phone, mobile, address }) => ({ id, name, town, regions, lat, lng, phone, mobile, address }));
 ---
 <div
   class:list={['supplier-map z-0 rounded-card border border-line bg-cream-2', cls]}
@@ -21,7 +21,8 @@ const data = points.map(({ id, name, town, region, lat, lng, phone, address }) =
   import 'leaflet/dist/leaflet.css';
   import { telHref } from '../lib/suppliers';
 
-  type Pt = { id: string; name: string; town: string; region: string; lat: number; lng: number; phone: string; address: string[] };
+  type Pt = { id: string; name: string; town: string; regions: string[]; lat: number; lng: number; phone: string; mobile?: string; address: string[] };
+  const tel = (n: string) => `<a href="${telHref(n)}">${esc(n)}</a>`;
 
   const pin = (on: boolean) =>
     L.divIcon({
@@ -48,7 +49,7 @@ const data = points.map(({ id, name, town, region, lat, lng, phone, address }) =
     for (const p of pts) {
       const m = L.marker([p.lat, p.lng], { icon: pin(false), title: `${p.name}, ${p.town}`, alt: p.name })
         .addTo(map)
-        .bindPopup(`<strong>${esc(p.name)}</strong><br>${esc(p.address.join(', '))}<br><a href="${telHref(p.phone)}">${esc(p.phone)}</a>`);
+        .bindPopup(`<strong>${esc(p.name)}</strong><br>${esc(p.address.join(', '))}<br>${tel(p.phone)}${p.mobile ? ` · ${tel(p.mobile)}` : ''}`);
       m.on('click', () => select(p.id, false));
       markers.set(p.id, m);
     }
@@ -69,7 +70,9 @@ const data = points.map(({ id, name, town, region, lat, lng, phone, address }) =
         map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 12), { duration: 0.6 });
         map.once('moveend', () => m.openPopup());
       }
-      root.querySelector(`.supplier[data-id="${id}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      [...root.querySelectorAll<HTMLElement>(`.supplier[data-id="${id}"]`)]
+        .find((c) => c.offsetParent !== null)
+        ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
     root.addEventListener('click', (e) => {
@@ -84,7 +87,9 @@ const data = points.map(({ id, name, town, region, lat, lng, phone, address }) =
       const region = f.dataset.regionFilter || null;
       root.querySelectorAll<HTMLElement>('[data-region-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b === f)));
       root.querySelectorAll<HTMLElement>('[data-region-group]').forEach((g) => (g.hidden = !!region && g.dataset.regionGroup !== region));
-      const vis = pts.filter((p) => !region || p.region === region);
+      // Secondary copies (a location listed under a second region) only show when that region is filtered.
+      root.querySelectorAll<HTMLElement>('.supplier[data-secondary]').forEach((c) => (c.hidden = !region));
+      const vis = pts.filter((p) => !region || p.regions.includes(region));
       markers.forEach((m, k) => m.setOpacity(vis.some((p) => p.id === k) ? 1 : 0.25));
       map.closePopup();
       map.flyToBounds(L.latLngBounds(vis.map((p) => [p.lat, p.lng])), { padding: [40, 40], maxZoom: 12, duration: 0.6 });

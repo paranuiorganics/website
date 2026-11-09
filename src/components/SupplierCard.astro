@@ -1,12 +1,16 @@
 ---
 import { telHref, type MapPoint } from '../lib/suppliers';
-interface Props { point: MapPoint; linkTown?: boolean; headingLevel?: 'h2' | 'h3' }
-const { point: p, linkTown = true, headingLevel: H = 'h3' } = Astro.props;
+// secondary: an extra copy of the card under a location's non-primary region. Hidden in the
+// "All regions" view so it isn't listed twice; SupplierMap shows it when that region is filtered.
+interface Props { point: MapPoint; linkTown?: boolean; headingLevel?: 'h2' | 'h3'; secondary?: boolean }
+const { point: p, linkTown = true, headingLevel: H = 'h3', secondary = false } = Astro.props;
 ---
 <article
   class="supplier rounded-2xl border-2 border-line bg-paper px-4 py-3 transition-colors data-[on]:border-clay hover:border-sage"
   data-id={p.id}
   data-region={p.region}
+  data-secondary={secondary ? '' : undefined}
+  hidden={secondary}
 >
   {linkTown
     ? <a href={`/${p.slug}`} class="text-xs font-extrabold uppercase tracking-wider text-clay-dark no-underline hover:underline">{p.town}</a>
@@ -17,6 +21,7 @@ const { point: p, linkTown = true, headingLevel: H = 'h3' } = Astro.props;
   <p class="mt-1 text-[15px] text-muted">
     {p.address.join(', ')}<br />
     <a href={telHref(p.phone)} class="font-bold text-sage-dark">{p.phone}</a>
+    {p.mobile && <> · <a href={telHref(p.mobile)} class="font-bold text-sage-dark">{p.mobile}</a></>}
     {p.website && <> · <a href={p.website} target="_blank" rel="noopener" class="font-bold text-sage-dark">Website</a></>}
   </p>
 </article>

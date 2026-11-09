@@ -1,12 +1,42 @@
 {
-  "$comment": "Single source for /suppliers (map + list) and the per-town pages. 'slug' is the live URL path and must not change. Coordinates from OpenStreetMap Nominatim; 'approx: true' means town-level only.",
+  "$comment": "Single source for /suppliers (map + list) and the per-town pages. 'slug' is the live URL path and must not change. 'region' is the primary region; 'alsoRegions' lists other region filters the location appears under. Coordinates from OpenStreetMap; 'approx: true' means town-level only.",
   "regions": [
+    { "id": "whanganui", "name": "Whanganui" },
     { "id": "manawatu", "name": "Manawatū" },
     { "id": "kapiti", "name": "Kāpiti Coast" },
     { "id": "wellington", "name": "Wellington" },
     { "id": "wairarapa", "name": "Wairarapa" }
   ],
   "locations": [
+    {
+      "slug": "wanganui",
+      "town": "Whanganui",
+      "region": "whanganui",
+      "suppliers": [
+        {
+          "name": "Bark & Boulders Landscaping Supplies",
+          "address": ["15 Murray Street", "Aramoho", "Whanganui 4500"],
+          "phone": "06 343 6111",
+          "lat": -39.9058197,
+          "lng": 175.0530000
+        }
+      ]
+    },
+    {
+      "slug": "marton",
+      "town": "Marton",
+      "region": "whanganui",
+      "alsoRegions": ["manawatu"],
+      "suppliers": [
+        {
+          "name": "Mitre 10 Marton",
+          "address": ["35 Russell Street", "Marton"],
+          "phone": "06 327 7079",
+          "lat": -40.0751592,
+          "lng": 175.3740186
+        }
+      ]
+    },
     {
       "slug": "palmerstonnorth",
       "town": "Palmerston North",
@@ -19,52 +49,22 @@
           "website": "https://landscape-supply-yard.co.nz/",
           "lat": -40.3861970,
           "lng": 175.6334606
-        },
-        {
-          "name": "Macphersons Garden Centre",
-          "address": ["261 Napier Road", "Palmerston North"],
-          "phone": "06 356 3356",
-          "website": "http://www.macphersons.co.nz/home.html",
-          "lat": -40.3386556,
-          "lng": 175.6494465
         }
       ]
     },
     {
-      "slug": "wanganui",
-      "town": "Whanganui",
+      "slug": "ashhurst",
+      "town": "Ashhurst",
       "region": "manawatu",
       "suppliers": [
         {
-          "name": "Bark & Boulders Landscaping Supplies",
-          "address": ["15 Murray Street", "Aramoho", "Whanganui 4500"],
-          "phone": "06 343 6111",
-          "lat": -39.9058197,
-          "lng": 175.0530000
-        }
-      ]
-    },
-    {
-      "slug": "levin",
-      "town": "Levin",
-      "region": "manawatu",
-      "suppliers": [
-        {
-          "name": "Landstorm Landscape Supplies and Landscaping Horowhenua",
-          "address": ["Levin"],
-          "phone": "027 408 6752",
-          "website": "https://www.landstormtrucking.com/",
-          "lat": -40.6218161,
-          "lng": 175.2865854,
-          "approx": true
-        },
-        {
-          "name": "Gecko Gardening Supplies",
-          "address": ["41A Tiro Tiro Road", "Levin"],
-          "phone": "06 368 5139",
-          "website": "https://whitepages.co.nz/w/gecko-gardening-surprise/",
-          "lat": -40.6219873,
-          "lng": 175.2712123
+          "name": "Ashhurst Landscape Supplies",
+          "address": ["145 Mulgrave Street", "Ashhurst"],
+          "phone": "06 326 7275",
+          "mobile": "027 557 8809",
+          "website": "https://manawatucontracting.co.nz/ashhursts-landscape-supply-yard",
+          "lat": -40.2964526,
+          "lng": 175.7469633
         }
       ]
     },
@@ -79,6 +79,22 @@
           "phone": "06 323 7502",
           "lat": -40.2271449,
           "lng": 175.5719923
+        }
+      ]
+    },
+    {
+      "slug": "levin",
+      "town": "Levin",
+      "region": "manawatu",
+      "suppliers": [
+        {
+          "name": "Levin Landscape Depot",
+          "address": ["52A Main Road South", "Levin"],
+          "phone": "027 946 1702",
+          "website": "https://levinlandscapedepot.co.nz",
+          "lat": -40.6218161,
+          "lng": 175.2865854,
+          "approx": true
         }
       ]
     },
@@ -119,6 +135,7 @@
           "name": "Branchy's Landscape Supplies Ltd",
           "address": ["9 Titoki Street", "Ōtaki"],
           "phone": "027 815 5449",
+          "website": "https://branchys.co.nz",
           "lat": -40.7600299,
           "lng": 175.1370088
         }
@@ -133,6 +150,7 @@
           "name": "Coastal Landscape Supplies",
           "address": ["13 Omahi Street", "Waikanae 5036"],
           "phone": "04 293 6621",
+          "website": "https://coastallandscapesupplies.co.nz",
           "lat": -40.8745994,
           "lng": 175.0646047
         }
@@ -165,14 +183,6 @@
           "website": "https://www.thegoodsshed.co.nz/",
           "lat": -41.2633122,
           "lng": 174.7861812
-        },
-        {
-          "name": "McMud Earthworks",
-          "address": ["36 Aruba Grove", "Grenada Village", "Wellington 6037"],
-          "phone": "04 477 4004",
-          "website": "https://mcmud.co.nz/",
-          "lat": -41.1965624,
-          "lng": 174.8276845
         }
       ]
     },

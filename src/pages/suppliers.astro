@@ -6,7 +6,7 @@ import SupplierCard from '../components/SupplierCard.astro';
 import { locations, regions, toPoints } from '../lib/suppliers';
 
 const points = toPoints(locations);
-const groups = regions.map((r) => ({ ...r, points: points.filter((p) => p.region === r.id) }));
+const groups = regions.map((r) => ({ ...r, points: points.filter((p) => p.regions.includes(r.id)) }));
 ---
 <Base
   title="Suppliers | Paranui Organics"
@@ -32,7 +32,7 @@ const groups = regions.map((r) => ({ ...r, points: points.filter((p) => p.region
             <section data-region-group={g.id} aria-labelledby={`region-${g.id}`}>
               <h2 id={`region-${g.id}`} class="!text-lg !text-muted">{g.name}</h2>
               <div class="mt-2 flex flex-col gap-2.5">
-                {g.points.map((p) => <SupplierCard point={p} />)}
+                {g.points.map((p) => <SupplierCard point={p} secondary={p.region !== g.id} />)}
               </div>
             </section>
           ))}
