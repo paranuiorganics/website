@@ -3,7 +3,6 @@ import Base from '../layouts/Base.astro';
 import PageIntro from '../components/PageIntro.astro';
 import business from '../data/business.json';
 
-const email = 'info@paranuiorganics.co.nz';
 const updated = '9 November 2026';
 ---
 <Base
@@ -44,7 +43,7 @@ const updated = '9 November 2026';
         <p>We keep enquiries only as long as we need them to deal with your enquiry and for our normal business records. Google Analytics data is kept for 14 months.</p>
 
         <h2>Your rights</h2>
-        <p>You can ask to see the personal information we hold about you, and ask us to correct it. Contact our Privacy Officer at <a href={`mailto:${email}`}>{email}</a> or on <a href={`tel:${business.phoneE164}`}>{business.phone}</a>.</p>
+        <p>You can ask to see the personal information we hold about you, and ask us to correct it. Phone our Privacy Officer on <a href={`tel:${business.phoneE164}`}>{business.phone}</a>.</p>
         <p>If you're not happy with how we've handled your information, you can complain to the Office of the Privacy Commissioner at <a href="https://www.privacy.org.nz" target="_blank" rel="noopener">privacy.org.nz</a>.</p>
       </div>
     </div>
