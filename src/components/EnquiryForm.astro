@@ -1,14 +1,12 @@
 ---
-// Web3Forms enquiry form with honeypot. Used on /contact and /commercial-recycling.
+// Web3Forms enquiry form with honeypot.
 interface Props {
   /** Email subject line the business receives. */
   subject?: string;
-  /** Show a "Business" field (commercial enquiries). */
-  business?: boolean;
   /** Show a free-text "Subject" field. */
   subjectField?: boolean;
 }
-const { subject = 'New enquiry from paranuiorganics.co.nz', business = false, subjectField = true } = Astro.props;
+const { subject = 'New enquiry from paranuiorganics.co.nz', subjectField = true } = Astro.props;
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 ---
 <form action="https://api.web3forms.com/submit" method="POST" class="enquiry-form mt-3 grid gap-4" data-key={accessKey ? '' : undefined}>
@@ -17,16 +15,9 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
   <input type="hidden" name="from_name" value="Paranui Organics website" />
   <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-  <div class:list={['grid gap-4', business && 'sm:grid-cols-2']}>
-    <label class="grid gap-1 font-bold">Name
-      <input name="name" required autocomplete="name" class="field" />
-    </label>
-    {business && (
-      <label class="grid gap-1 font-bold">Business
-        <input name="business" autocomplete="organization" class="field" />
-      </label>
-    )}
-  </div>
+  <label class="grid gap-1 font-bold">Name
+    <input name="name" required autocomplete="name" class="field" />
+  </label>
   <div class="grid gap-4 sm:grid-cols-2">
     <label class="grid gap-1 font-bold">Email
       <input type="email" name="email" required autocomplete="email" class="field" />

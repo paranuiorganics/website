@@ -5,22 +5,61 @@ import PageIntro from '../components/PageIntro.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import seedlings from '../assets/images/seedlings.jpg';
 import business from '../data/business.json';
+
+const contacts = [
+  {
+    title: 'General enquiries and bulk orders',
+    detail: 'Products, bulk orders and anything else',
+    phone: business.phone,
+    tel: business.phoneE164,
+  },
+  {
+    title: 'Commercial recycling',
+    detail: 'Talk to Glenn about your organic waste stream',
+    phone: '027 512 9436',
+    tel: '+64275129436',
+    link: { href: '/commercial-recycling', label: 'About commercial recycling' },
+  },
+  {
+    title: 'Commercial wood grinding',
+    detail: 'Our partners at Monster Mulching',
+    phone: '027 457 3482',
+    tel: '+64274573482',
+    link: { href: 'https://monstermulching.nz', label: 'monstermulching.nz', external: true },
+  },
+];
 ---
 <Base
   title="Contact | Paranui Organics"
   description="Contact Paranui Organics about garden products, bulk orders or commercial organic waste recycling. Phone 06 329 9707."
 >
   <section class="section">
-    <div class="wrap grid items-stretch gap-10 lg:grid-cols-2">
+    <div class="wrap grid items-start gap-10 lg:grid-cols-2">
       <div>
         <PageIntro eyebrow="Get in touch" title="Contact us">
           <p>Interested in helping to make the world a greener place? Get in touch to learn more about our wide range of products and recycling services.</p>
         </PageIntro>
-        <p class="mt-6">For all enquiries, call<br /><a href={`tel:${business.phoneE164}`} class="text-3xl font-extrabold text-soil no-underline hover:underline">{business.phone}</a></p>
-        <p class="mt-6">Or send us a message:</p>
+
+        <h2 class="sr-only">Phone numbers</h2>
+        <ul class="mt-8 grid gap-3">
+          {contacts.map((c) => (
+            <li class="grid items-center gap-x-6 gap-y-2 rounded-2xl border-2 border-line bg-paper px-5 py-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <div class="min-w-0">
+                <p class="font-extrabold text-soil">{c.title}</p>
+                <p class="text-[15px] text-muted">
+                  {c.detail}
+                  {c.link && <> · <a href={c.link.href} class="font-bold text-sage-dark" {...(c.link.external ? { target: '_blank', rel: 'noopener' } : {})}>{c.link.label}</a></>}
+                </p>
+              </div>
+              <a href={`tel:${c.tel}`} class="whitespace-nowrap text-2xl font-extrabold text-soil no-underline hover:underline">{c.phone}</a>
+            </li>
+          ))}
+        </ul>
+
+        <h2 class="mt-10 !text-2xl">Or send us a message</h2>
         <EnquiryForm />
       </div>
-      <Image src={seedlings} alt="Seedlings growing in pots of compost" widths={[600, 900, 1300]} sizes="(min-width: 1024px) 560px, 100vw" class="hidden size-full min-h-80 rounded-card object-cover lg:block" />
+      <Image src={seedlings} alt="Seedlings growing in pots of compost" widths={[600, 900, 1300]} sizes="(min-width: 1024px) 560px, 100vw" class="hidden min-h-80 w-full rounded-card object-cover lg:block lg:sticky lg:top-24 lg:h-[640px]" />
     </div>
   </section>
 </Base>
