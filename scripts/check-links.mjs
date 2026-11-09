@@ -35,6 +35,8 @@ for (const page of pages) {
   }
 }
 for (const p of LEGACY_PATHS) if (!resolve(p)) errors.push(`legacy path not served: ${p}`);
+for (const [, loc] of readFileSync(join(DIST, 'sitemap.xml'), 'utf8').matchAll(/<loc>[^<]*\/([^/<]+)<\/loc>/g))
+  if (!existsSync(join(DIST, loc))) errors.push(`sitemap.xml lists missing ${loc}`);
 
 if (errors.length) {
   console.error(`✗ ${errors.length} link problem(s):\n  ${errors.join('\n  ')}`);
