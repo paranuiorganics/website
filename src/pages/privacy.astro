@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import business from '../data/business.json';
+
+const email = 'info@paranuiorganics.co.nz';
+const updated = '9 November 2026';
+---
+<Base
+  title="Privacy Policy | Paranui Organics"
+  description="How Paranui Organics collects, uses and protects personal information on this website."
+>
+  <section class="section">
+    <div class="wrap">
+      <PageIntro title="Privacy policy">
+        <p>Last updated {updated}</p>
+      </PageIntro>
+
+      <div class="policy mt-10 max-w-2xl">
+        <p>{business.legalName} ("we", "us") follows the Privacy Act 2020. This page explains what personal information this website collects, why, and what you can do about it.</p>
+
+        <h2>What we collect</h2>
+        <ul>
+          <li><strong>Enquiries:</strong> when you use our contact form, we collect your name, email, phone number (optional) and message. If you'd rather not provide these, you can phone us instead.</li>
+          <li><strong>Website usage:</strong> if you accept cookies, Google Analytics collects information about how you use the site, such as pages viewed, approximate location, device and browser. It doesn't tell us who you are.</li>
+        </ul>
+
+        <h2>How we use it</h2>
+        <p>We use your enquiry details only to reply to you and to deal with your enquiry. We use analytics to understand which pages are useful and to improve the site. We don't sell your information or use it for advertising.</p>
+
+        <h2>Who else handles it</h2>
+        <ul>
+          <li><strong>Web3Forms</strong> receives form submissions and emails them to us.</li>
+          <li><strong>Google</strong> provides our email and, if you accept cookies, Google Analytics.</li>
+          <li><strong>GitHub</strong> hosts this website and may log technical data such as IP addresses for security.</li>
+        </ul>
+        <p>These providers may store information outside New Zealand, including in the United States. We use them only to run this website and our email.</p>
+
+        <h2>Cookies</h2>
+        <p>We only set Google Analytics cookies if you click "Accept" on the cookie banner. If you decline, no analytics cookies are set. The site remembers your choice in your browser.</p>
+        <p><button type="button" id="reset-consent" class="btn btn-outline cursor-pointer px-5 py-2">Change my cookie choice</button></p>
+
+        <h2>How long we keep it</h2>
+        <p>We keep enquiries only as long as we need them to deal with your enquiry and for our normal business records. Google Analytics data is kept for 14 months.</p>
+
+        <h2>Your rights</h2>
+        <p>You can ask to see the personal information we hold about you, and ask us to correct it. Contact our Privacy Officer at <a href={`mailto:${email}`}>{email}</a> or on <a href={`tel:${business.phoneE164}`}>{business.phone}</a>.</p>
+        <p>If you're not happy with how we've handled your information, you can complain to the Office of the Privacy Commissioner at <a href="https://www.privacy.org.nz" target="_blank" rel="noopener">privacy.org.nz</a>.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .policy h2 { margin-top: 2rem; font-size: 1.5rem; }
+  .policy p, .policy ul { margin-top: 0.75rem; }
+  .policy ul { list-style: disc; padding-left: 1.25rem; }
+  .policy li + li { margin-top: 0.4rem; }
+  .policy a { font-weight: 700; }
+</style>
+
+<script>
+  document.getElementById('reset-consent')?.addEventListener('click', () => {
+    try { localStorage.removeItem('po-consent'); } catch {}
+    location.reload();
+  });
+</script>
