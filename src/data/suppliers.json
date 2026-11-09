@@ -118,10 +118,10 @@
       "suppliers": [
         {
           "name": "Parlato's Yard Supplies",
-          "address": ["30 Graham Street", "Shannon 4821"],
+          "address": ["42 Thompson Street", "Shannon 4821"],
           "phone": "021 239 9769",
-          "lat": -40.5515410,
-          "lng": 175.4097299
+          "lat": -40.5471568,
+          "lng": 175.4066496
         }
       ]
     },
@@ -147,11 +147,11 @@
       "suppliers": [
         {
           "name": "Coastal Landscape Supplies",
-          "address": ["13 Omahi Street", "Waikanae 5036"],
+          "address": ["15 Omahi Street", "Waikanae 5036"],
           "phone": "021 419 672",
           "website": "https://coastallandscapesupplies.co.nz",
-          "lat": -40.8745994,
-          "lng": 175.0646047
+          "lat": -40.8741757,
+          "lng": 175.0646468
         }
       ]
     },
@@ -207,11 +207,10 @@
       "suppliers": [
         {
           "name": "Higgins Contractors Wairarapa",
-          "address": ["State Highway 2", "Waingawa", "Carterton 5791"],
+          "address": ["4061 State Highway 2", "Waingawa 5791"],
           "phone": "06 370 0444",
-          "lat": -40.7558075,
-          "lng": 175.4748408,
-          "approx": true
+          "lat": -40.9664549,
+          "lng": 175.6062732
         }
       ]
     },
